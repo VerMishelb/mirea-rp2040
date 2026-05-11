@@ -1,0 +1,30 @@
+# file.c for a file
+# *.c for all .c files
+# dir/ for directories
+# /file, /dir/, dir/file for files and dirs relative to the current .gitignore
+# !file to exlude file from .gitignore if it was covered by other pattern
+# [a-zA-Z], * and ? are self-explanatory.
+# **/file match in all directories
+# dir/** match everything inside
+# dir/**/file match everything that is dir/something/file
+# the dir/* thing only covers files on that level, meaning that dir/something/file will still be covered. Not with dir/**, tho.
+
+*.exe
+*.dll
+*.lib
+
+*.elf
+*.o
+*.so
+*.pdb
+
+**/build/**
+
+# pico specific
+*.uf2
+*.dis
+*.map
+*.hex
+*.bin
+
+.vscode/

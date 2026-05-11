@@ -1,0 +1,55 @@
+; version 0 for 2040, version 1 for 2350.
+.pio_version 0
+
+.program ws2812
+; What is this?
+.side_set 1
+
+; The following constants are selected for broad compatibility with WS2812,
+; WS2812B, and SK6812 LEDs. Other constants may support higher bandwidths for
+; specific LEDs, such as (7,10,8) for WS2812B LEDs.
+
+.define public T1 3
+.define public T2 3
+.define public T3 4
+
+.lang_opt python sideset_init = pico.PIO.OUT_HIGH
+.lang_opt python out_init     = pico.PIO.OUT_HIGH
+.lang_opt python out_shiftdir = 1
+
+; Отправляет пульсы на светодиод, чтобы передать информацию о цвете.
+; What does "wrap" and "side" do?
+.wrap_target
+bitloop:
+    out x, 1       side 0 [T3 - 1] ; [3] Side-set still takes place when instruction stalls
+    jmp !x do_zero side 1 [T1 - 1] ; [2] Branch on the bit we shifted out. Positive pulse
+do_one:
+    jmp  bitloop   side 1 [T2 - 1] ; [2] Continue driving high, for a long pulse
+do_zero:
+    nop            side 0 [T2 - 1] ; [2] Or drive low, for a short pulse
+.wrap
+
+% c-sdk {
+#include "hardware/clocks.h"
+
+static inline void ws2812_program_init(PIO pio, uint sm, uint offset, uint pin, float freq, bool rgbw) {
+    // sm - state machine
+    // Setup the function select for a GPIO to use output from the given PIO instance.
+    pio_gpio_init(pio, pin);
+    // Use a state machine to set the same pin direction for multiple consecutive pins for the PIO instance.
+    pio_sm_set_consecutive_pindirs(pio, sm, pin, 1, true);
+
+    pio_sm_config c = ws2812_program_get_default_config(offset);
+    sm_config_set_sideset_pins(&c, pin);
+    sm_config_set_out_shift(&c, false, true, rgbw ? 32 : 24);
+    sm_config_set_fifo_join(&c, PIO_FIFO_JOIN_TX);
+
+    int cycles_per_bit = ws2812_T1 + ws2812_T2 + ws2812_T3;
+    // Привести частоту выполнения к 800 кГц, вычислив и задав делитель.
+    float div = clock_get_hz(clk_sys) / (freq * cycles_per_bit);
+    sm_config_set_clkdiv(&c, div);
+
+    pio_sm_init(pio, sm, offset, &c);
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}
