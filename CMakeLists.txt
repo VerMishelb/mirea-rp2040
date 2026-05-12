@@ -26,6 +26,7 @@ include(cmake/FreeRTOS-Config.cmake) # FreeRTOS-Config
 include(cmake/IoLibrary_Driver.cmake) # IoLibrary
 include(cmake/mbedtls_config.cmake) # mbedtls_config
 include(cmake/timer.cmake) # timer_port
+include(cmake/no-OS-FatFS-SD-SDIO-SPI-RPi-Pico.cmake)
 add_subdirectory(lib/lwip-config)
 # add_subdirectory(lib/open62541)
 
@@ -42,3 +43,5 @@ add_subdirectory(src/onboard_temperature)
 # add_subdirectory(src/opcua)
 add_subdirectory(src/uart_input_test)
 # add_subdirectory(src/opcua62541)
+add_subdirectory(src/sd)
+add_subdirectory(src/sd_command_line)
