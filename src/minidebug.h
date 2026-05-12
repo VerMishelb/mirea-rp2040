@@ -82,7 +82,7 @@
 
 #ifdef minidebug_colorise_output
     #define minidebug_COLOUR_DEFAULT    minidebug_SGR(minidebug_SGR_COLOUR_DEFAULT)
-    #define minidebug_COLOUR_MSG        minidebug_SGR(minidebug_SGR_COLOUR_DEFAULT;minidebug_SGR_COLOUR_F_BRIGHT_YELLOW)
+    #define minidebug_COLOUR_MSG        minidebug_SGR(minidebug_SGR_COLOUR_DEFAULT)
     #define minidebug_COLOUR_FUNC       minidebug_SGR(minidebug_SGR_COLOUR_F_BRIGHT_MAGENTA)
     #define minidebug_COLOUR_FILE       minidebug_SGR(minidebug_SGR_COLOUR_F_UNDERLINE;minidebug_SGR_COLOUR_F_DEFAULT)
     #define minidebug_COLOUR_LINE       minidebug_SGR(minidebug_SGR_COLOUR_F_NOUNDERLINE)
